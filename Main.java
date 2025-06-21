@@ -3,8 +3,9 @@ import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
-        int budget = 5;
-        List<District> districts = readDistrictsFromCSV("districts.csv");
+        String filename = "resources/Case 4 – High Urgency, Low Cost Prioritisation.csv";
+        int budget = readBudgetFromCSV(filename);
+        List<District> districts = readDistrictsFromCSV(filename);
 
         if (districts.isEmpty()) {
             System.out.println("No districts loaded.");
@@ -32,11 +33,26 @@ public class Main {
         }
     }
 
+    private static int readBudgetFromCSV(String filename) {
+        try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
+            String firstLine = br.readLine();
+            if (firstLine != null && firstLine.startsWith("Budget")) {
+                String[] parts = firstLine.split(",");
+                return Integer.parseInt(parts[1].trim());
+            }
+        } catch (IOException e) {
+            System.err.println("Error reading budget from CSV: " + e.getMessage());
+        }
+        return 0; // fallback if budget not found
+    }
+
     private static List<District> readDistrictsFromCSV(String filename) {
         List<District> districts = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
             String line;
-            br.readLine(); // skip header
+            br.readLine(); // Skip budget
+            br.readLine(); // Skip header
+          
             while ((line = br.readLine()) != null) {
                 String[] parts = line.split(",");
                 if (parts.length >= 4) {
