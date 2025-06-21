@@ -46,13 +46,13 @@ public class Main {
         return 0; // fallback if budget not found
     }
 
-
     private static List<District> readDistrictsFromCSV(String filename) {
         List<District> districts = new ArrayList<>();
         try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
             String line;
-            br.readLine(); // Skip Budget
-            br.readLine(); // skip header
+            br.readLine(); // Skip budget
+            br.readLine(); // Skip header
+          
             while ((line = br.readLine()) != null) {
                 String[] parts = line.split(",");
                 if (parts.length >= 4) {
