@@ -48,12 +48,12 @@ public class Main {
         FoodBankAllocator.AllocationResult result = allocation.allocateFoodBanks();
         System.out.println("\nOutput Result:");
         System.out.printf("   Maximum Value: %.1f%n", result.maxValue);
-        System.out.println("   Selected Districts: " + result.selected.size());
-        for (District selectedDistrict : result.selected) {
+        System.out.println("   Selected Districts: " + result.selectedDistricts.size());
+        for (District selectedDistrict : result.selectedDistricts) {
             System.out.println("   " + selectedDistrict);
         }
         
-        int totalCost = result.selected.stream().mapToInt(District::getCost).sum();
+        int totalCost = result.selectedDistricts.stream().mapToInt(District::getCost).sum();
         System.out.printf("   Total Cost: $%d (Budget: $%d)%n", totalCost, budget[0]);
     }
     

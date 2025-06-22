@@ -33,26 +33,26 @@ public class FoodBankAllocator {
         }
         
         // Backtrack to find selected districts
-        List<District> selected = new ArrayList<>();
+        List<District> selectedDistricts = new ArrayList<>();
         int w = budget;
 
         for (int i = n; i > 0; i--) {
             if (dp[i][w] > dp[i - 1][w]) {
-                selected.add(districts.get(i - 1));
+                selectedDistricts.add(districts.get(i - 1));
                 w -= districts.get(i - 1).getCost();
             }
         }
 
-        return new AllocationResult(dp[n][budget], selected);
+        return new AllocationResult(dp[n][budget], selectedDistricts);
     }
 
     public static class AllocationResult {
         public final double maxValue;
-        public final List<District> selected;
+        public final List<District> selectedDistricts;
 
-        public AllocationResult(double maxValue, List<District> selected) {
+        public AllocationResult(double maxValue, List<District> selectedDistricts) {
             this.maxValue = maxValue;
-            this.selected = selected;
+            this.selectedDistricts = selectedDistricts;
         }
     }
 } 
