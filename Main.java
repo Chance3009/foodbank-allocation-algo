@@ -1,71 +1,95 @@
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
-        String filename = "resources/Case 4 – High Urgency, Low Cost Prioritisation.csv";
-        int budget = readBudgetFromCSV(filename);
-        List<District> districts = readDistrictsFromCSV(filename);
-
+        if (args.length == 0) {
+            System.out.println("Usage: java Main <filename>");
+            System.out.println("Example: java Main \"resources/Case 1 – Typical Scenario.json\"");
+            return;
+        }
+        
+        String filename = args[0];
+        File file = new File(filename);
+        if (!file.exists()) {
+            System.out.println("Error: File '" + filename + "' not found.");
+            return;
+        }
+        
+        System.out.println("=== Food Bank Allocation Algorithm ===");
+        System.out.println("Processing: " + filename);
+        System.out.println("-".repeat(50));
+        
+        // Read JSON and parse data
+        String content = readFile(filename);
+        if (content == null) return;
+        
+        int[] budget = {0};
+        List<District> districts = new ArrayList<>();
+        parseJSON(content, budget, districts);
+        
         if (districts.isEmpty()) {
-            System.out.println("No districts loaded.");
+            System.out.println("Error: No districts found in " + filename);
             return;
         }
 
-        // Run allocation
-        FoodBankAllocator allocation = new FoodBankAllocator(budget, districts);
+        // Run algorithm
+        FoodBankAllocator allocation = new FoodBankAllocator(budget[0], districts);
 
-        // Print input details
-        System.out.println("===Input Details===");
-        System.out.println("Budget: " + budget);
-        System.out.println("Districts:");
+        System.out.println("Input Details:");
+        System.out.println("   Budget: $" + budget[0]);
+        System.out.println("   Districts: " + districts.size());
         for (District district : districts) {
-            System.out.println(district);
+            System.out.println("   " + district);
         }
 
-        // Get and print result
         FoodBankAllocator.AllocationResult result = allocation.allocateFoodBanks();
-        System.out.println("\n===Output Result===");
-        System.out.printf("Maximum Value: %.1f%n", result.maxValue);
-        System.out.println("Selected Districts:");
+        System.out.println("\nOutput Result:");
+        System.out.printf("   Maximum Value: %.1f%n", result.maxValue);
+        System.out.println("   Selected Districts: " + result.selected.size());
         for (District selectedDistrict : result.selected) {
-            System.out.println(selectedDistrict);
+            System.out.println("   " + selectedDistrict);
+        }
+        
+        int totalCost = result.selected.stream().mapToInt(District::getCost).sum();
+        System.out.printf("   Total Cost: $%d (Budget: $%d)%n", totalCost, budget[0]);
+    }
+    
+    private static String readFile(String filename) {
+        try {
+            return new String(Files.readAllBytes(Paths.get(filename)));
+        } catch (IOException e) {
+            System.err.println("Error reading file: " + e.getMessage());
+            return null;
         }
     }
-
-    private static int readBudgetFromCSV(String filename) {
-        try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
-            String firstLine = br.readLine();
-            if (firstLine != null && firstLine.startsWith("Budget")) {
-                String[] parts = firstLine.split(",");
-                return Integer.parseInt(parts[1].trim());
+    
+    private static void parseJSON(String json, int[] budget, List<District> districts) {
+        try {
+            json = json.replaceAll("\\s+", "");
+            
+            // Extract budget
+            budget[0] = Integer.parseInt(json.split("\"budget\":")[1].split(",")[0]);
+            
+            // Extract districts
+            String districtsPart = json.split("\"districts\":\\[")[1].split("\\]")[0];
+            
+            for (String district : districtsPart.split("\\{")) {
+                if (district.isEmpty()) continue;
+                district = district.replaceAll("\\},?$", "");
+                
+                String[] fields = district.split(",");
+                String name = fields[0].split(":")[1].replace("\"", "");
+                int cost = Integer.parseInt(fields[1].split(":")[1]);
+                int value = Integer.parseInt(fields[2].split(":")[1]);
+                String urgency = fields[3].split(":")[1].replace("\"", "");
+                
+                districts.add(new District(name, cost, value, urgency));
             }
-        } catch (IOException e) {
-            System.err.println("Error reading budget from CSV: " + e.getMessage());
+        } catch (Exception e) {
+            System.err.println("Error parsing JSON: " + e.getMessage());
         }
-        return 0; // fallback if budget not found
-    }
-
-    private static List<District> readDistrictsFromCSV(String filename) {
-        List<District> districts = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
-            String line;
-            br.readLine(); // Skip budget
-            br.readLine(); // Skip header
-          
-            while ((line = br.readLine()) != null) {
-                String[] parts = line.split(",");
-                if (parts.length >= 4) {
-                    String name = parts[0].trim();
-                    int cost = Integer.parseInt(parts[1].trim());
-                    int value = Integer.parseInt(parts[2].trim());
-                    String urgency = parts[3].trim();
-                    districts.add(new District(name, cost, value, urgency));
-                }
-            }
-        } catch (IOException e) {
-            System.err.println("Error reading CSV: " + e.getMessage());
-        }
-        return districts;
     }
 }

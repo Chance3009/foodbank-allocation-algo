@@ -1,0 +1,35 @@
+{
+    "budget": 5,
+    "districts": [
+        {
+            "name": "A",
+            "cost": 2,
+            "value": 100,
+            "urgency": "High"
+        },
+        {
+            "name": "B",
+            "cost": 1,
+            "value": 80,
+            "urgency": "Critical"
+        },
+        {
+            "name": "C",
+            "cost": 3,
+            "value": 120,
+            "urgency": "Moderate"
+        },
+        {
+            "name": "D",
+            "cost": 2,
+            "value": 90,
+            "urgency": "High"
+        },
+        {
+            "name": "E",
+            "cost": 1,
+            "value": 60,
+            "urgency": "Moderate"
+        }
+    ]
+}

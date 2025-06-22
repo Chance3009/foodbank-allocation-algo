@@ -1,0 +1,17 @@
+{
+    "budget": 0,
+    "districts": [
+        {
+            "name": "A",
+            "cost": 1,
+            "value": 50,
+            "urgency": "High"
+        },
+        {
+            "name": "B",
+            "cost": 2,
+            "value": 100,
+            "urgency": "Critical"
+        }
+    ]
+}
