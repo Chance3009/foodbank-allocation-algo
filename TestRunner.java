@@ -38,14 +38,4 @@ public class TestRunner {
         }
         return new File[0];
     }
-    
-    static class TestCase {
-        final int budget;
-        final List<District> districts;
-        
-        TestCase(int budget, List<District> districts) {
-            this.budget = budget;
-            this.districts = districts;
-        }
-    }
 } 
