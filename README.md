@@ -1,102 +1,63 @@
-# Food Bank Allocation Algorithm
+# CSC4202 Group Project - Food Bank Allocation Algorithm
 
-A Java implementation of a dynamic programming algorithm to optimally allocate food banks across districts based on budget constraints, population, and urgency levels.
+An optimal resource allocation system for food bank distribution using **Dynamic Programming** approach for the **CSC4202 Algorithm Design and Analysis** course.
 
----
-
-## Problem
-Given a limited budget and multiple districts with different:
-- Population sizes
-- Urgency levels (Critical, High, Moderate)
-- Delivery costs
-
-The algorithm determines which districts to serve to maximize the priority-weighted population served.
+This project focuses on solving the **0/1 Knapsack Problem** with weighted values to optimally allocate limited budget across multiple districts based on population, cost, and urgency levels.
 
 ---
 
-## Algorithm Details
+## Group Members – Group 6
 
-The algorithm uses dynamic programming to solve the 0/1 knapsack problem:
-
-1. **Value Calculation**: Each district's value is calculated as `population × urgency_weight`
-2. **Dynamic Programming**: Uses a 2D DP table to find optimal allocation
-3. **Backtracking**: Reconstructs the solution to identify selected districts
-
-### Urgency Weights
-- **Critical**: 2.0x multiplier
-- **High**: 1.5x multiplier  
-- **Moderate**: 1.0x multiplier
+| Name             | Matric Number |
+|------------------|---------------|
+| Chan Ci En       | 215035        |
+| Khoo Boo Jing    | 215382        |
+| Loo Huai Yuan    | 215516        |
+| Tan Yong Jin     | 217086        |
 
 ---
 
-## JSON File Format
+## Problem Scenario
 
-Test case files follow this JSON structure:
+### Background
+In a developing country, a humanitarian organization has a limited budget to establish food banks across multiple districts. Each district has different characteristics:
+- **Population**: Number of people who would benefit
+- **Cost**: Amount required to establish a food bank
+- **Urgency Level**: Critical, High, Moderate (affecting priority)
 
-```json
-{
-  "budget": 5,
-  "districts": [
-    {
-      "name": "A",
-      "cost": 2,
-      "value": 100,
-      "urgency": "High"
-    },
-    {
-      "name": "B",
-      "cost": 1,
-      "value": 80,
-      "urgency": "Critical"
-    }
-  ]
-}
-```
-
-- **budget**: Total available budget
-- **districts**: Array of district objects
-  - **name**: District identifier
-  - **cost**: Cost to establish food bank in this district
-  - **value**: Population size (used for value calculation)
-  - **urgency**: Urgency level (Critical/High/Moderate)
+### Problem Statement
+Given a fixed budget and a list of districts with their respective costs, population sizes, and urgency levels, determine the optimal combination of districts to establish food banks that maximizes the total weighted benefit while staying within budget constraints.
 
 ---
+## Setup
 
-## Usage
-
-### Individual Case Testing
-
-To run a specific test case:
-
+### 1. Clone the repository:
 ```bash
-java Main "resources/Case 1 – Typical Scenario.json"
+git clone https://github.com/your-username/foodbank-allocation-algo.git
+cd foodbank-allocation-algo
 ```
 
-### Batch Testing
-
-To run all test cases at once:
-
+### 2. Compile the Java files:
 ```bash
-java TestRunner
+javac src/*.java
 ```
 
-This will automatically discover and run all JSON files in the `resources/` directory.
-
----
-
-## Compilation
-
+### 3. Run the program:
 ```bash
-javac *.java
+# Run with a specific test case
+java -cp src Main "src/resources/Case 1 – Typical Scenario.json"
+
+# Available test cases:
+# - Case 1 – Typical Scenario.json
+# - Case 2 – Zero Budget (Edge Case).json  
+# - Case 3 – All Districts Affordable.json
+# - Case 4 – High Urgency, Low Cost Prioritisation.json
 ```
 
----
-
-## Example Output
-
+### 4. Expected Output:
 ```
 === Food Bank Allocation Algorithm ===
-Processing: resources/Case 1 – Typical Scenario.json
+Processing: src/resources/Case 1 – Typical Scenario.json
 --------------------------------------------------
 Input Details:
    Budget: $5
@@ -104,11 +65,64 @@ Input Details:
    District A: Cost=2, Population=100, Urgency=High, WeightedValue=150.0
    District B: Cost=1, Population=80, Urgency=Critical, WeightedValue=160.0
    District C: Cost=3, Population=120, Urgency=Moderate, WeightedValue=120.0
+   District D: Cost=2, Population=90, Urgency=High, WeightedValue=135.0
+   District E: Cost=1, Population=60, Urgency=Moderate, WeightedValue=60.0
 
 Output Result:
-   Maximum Value: 310.0
+   Maximum Value: 295.0
    Selected Districts: 2
-   District A: Cost=2, Population=100, Urgency=High, WeightedValue=150.0
    District B: Cost=1, Population=80, Urgency=Critical, WeightedValue=160.0
+   District D: Cost=2, Population=90, Urgency=High, WeightedValue=135.0
    Total Cost: $3 (Budget: $5)
+```
+
+---
+
+## Algorithm Specification
+
+### Input Format (JSON)
+```json
+{
+    "budget": <integer>,
+    "districts": [
+        {
+            "name": "<string>",
+            "cost": <integer>,
+            "value": <integer>,
+            "urgency": "<Critical|High|Moderate>"
+        }
+    ]
+}
+```
+
+---
+
+## Test Cases
+
+The project includes four comprehensive test cases:
+
+1. **Case 1 – Typical Scenario**: Standard allocation with mixed urgency levels
+2. **Case 2 – Zero Budget**: Edge case testing with no available budget
+3. **Case 3 – All Districts Affordable**: When budget exceeds all district costs
+4. **Case 4 – High Urgency, Low Cost Prioritisation**: Testing urgency-based weighting
+
+---
+
+## Project Structure
+
+```
+foodbank-allocation-algo/
+├── README.md                           # This file
+├── src/
+│   ├── Main.java                       # Main program entry point
+│   ├── FoodBankAllocator.java          # Core DP algorithm implementation
+│   ├── District.java                   # District data model
+│   ├── TestRunner.java                 # Automated test runner
+│   └── resources/                      # Test case JSON files
+│       ├── Case 1 – Typical Scenario.json
+│       ├── Case 2 – Zero Budget (Edge Case).json
+│       ├── Case 3 – All Districts Affordable.json
+│       └── Case 4 – High Urgency, Low Cost Prioritisation.json
+├── CSC4202 Group Project_Group 6_Slides.pdf
+└── CSC4202 Group Project_Group 6_Report.pdf
 ```
